@@ -30,23 +30,38 @@ module.exports = {
   lintOnSave: process.env.NODE_ENV === 'development',
   productionSourceMap: false,
   devServer: {
-    port: port,
-    open: true,
-    overlay: {
-      warnings: false,
-      errors: true
-    },
+    open: true, // 自动启动浏览器
+    host: '0.0.0.0', // localhost
+    port: port, // 端口号
+    https: false,
+    hotOnly: true, // 热更新
     proxy: {
       '^/api': {
-        // target: 'http://115.159.117.118:3000/',
-        // target: 'http://192.168.0.105:3000',
         target: process.env.VUE_APP_BASE_API,
         ws: true,
         changeOrigin: true
       }
-    },
-    before: require('./mock/mock-server.js')
+    }
+    // before: require('./mock/mock-server.js')
   },
+  // devServer: {
+  //   port: port,
+  //   open: true,
+  //   overlay: {
+  //     warnings: false,
+  //     errors: true
+  //   },
+  //   proxy: {
+  //     '^/api': {
+  //       // target: 'http://115.159.117.118:3000/',
+  //       target: 'http://192.168.0.105:3000/',
+  //       // target: process.env.VUE_APP_BASE_API,
+  //       ws: true,
+  //       changeOrigin: true
+  //     }
+  //   },
+  //   before: require('./mock/mock-server.js')
+  // },
   configureWebpack: {
     // provide the app's title in webpack's name field, so that
     // it can be accessed in index.html to inject the correct title.
