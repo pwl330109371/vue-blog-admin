@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-27 14:54:00
- * @LastEditTime: 2021-01-28 18:04:59
+ * @LastEditTime: 2021-01-29 11:11:39
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-blog-admin\src\api\tag.js
@@ -24,11 +24,11 @@ export function createCategory(data) {
 }
 
 // 获取标签列表
-export function getCategoryList(data) {
+export function getCategoryList(params) {
   return serve({
     url: '/api/category/getCategory',
-    method: 'POST',
-    data
+    method: 'GET',
+    params
   })
 }
 

@@ -32,6 +32,7 @@ module.exports = {
   devServer: {
     port: port,
     open: true,
+    https: false,
     overlay: {
       warnings: false,
       errors: true
@@ -44,8 +45,8 @@ module.exports = {
         ws: true,
         changeOrigin: true
       }
-    },
-    before: require('./mock/mock-server.js')
+    }
+    // before: require('./mock/mock-server.js') // 这里打开可能会出现代理不通的问题
   },
   configureWebpack: {
     // provide the app's title in webpack's name field, so that

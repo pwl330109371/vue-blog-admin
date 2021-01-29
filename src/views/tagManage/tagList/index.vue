@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-27 11:30:15
- * @LastEditTime: 2021-01-28 18:07:14
+ * @LastEditTime: 2021-01-29 11:30:03
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-blog-admin\src\views\tagManage\tagList\index.vue
@@ -11,11 +11,11 @@
     <el-tabs type="border-card">
       <el-button type="primary" class="creata-tag" size="small" @click="createTag">添加标签<i class="el-icon-upload el-icon--right" /></el-button>
       <el-tab-pane label="标签管理" class="box-card-container">
-        <el-row class="demo-autocomplete">
-          <el-col :lg="6" :md="18" :xs="24">
+        <el-row class="demo-autocomplete" :gutter="20">
+          <el-col v-for="(item, index) in CategoryList" :key="item.id" :lg="6" :md="18" :xs="24">
             <el-card class="box-card">
               <div slot="header" class="clearfix">
-                <span>卡片名称</span>
+                <span>{{ item.name }}</span>
                 <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>
               </div>
               <el-tag
@@ -31,11 +31,11 @@
               <el-input
                 v-if="inputVisible"
                 ref="saveTagInput"
-                v-model="inputValue"
+                v-model="inputValue[index]"
                 class="input-new-tag"
                 size="small"
-                @keyup.enter.native="handleInputConfirm"
-                @blur="handleInputConfirm"
+                @keyup.enter.native="handleInputConfirm(item.id)"
+                @blur="handleInputConfirm(item.id)"
               />
               <el-button v-else class="button-new-tag" size="small" @click="showInput">+ New Tag</el-button>
             </el-card>
@@ -59,7 +59,8 @@ export default {
     return {
       dynamicTags: ['标签一', '标签二', '标签三'],
       inputVisible: false,
-      inputValue: ''
+      CategoryList: [], // 标签列表
+      inputValue: []
     }
   },
   mounted() {
@@ -73,7 +74,7 @@ export default {
         type: 1
       }
       const { data } = await getCategoryList(params)
-      console.log(data)
+      this.CategoryList = data
     },
     // 创建父类标签
     createTag() {
@@ -108,11 +109,12 @@ export default {
         this.$refs.saveTagInput.$refs.input.focus()
       })
     },
-    handleInputConfirm() {
+    handleInputConfirm(id) {
       const inputValue = this.inputValue
       if (inputValue) {
         this.dynamicTags.push(inputValue)
       }
+      this.createCategory(id, inputValue, 2)
       this.inputVisible = false
       this.inputValue = ''
     }
