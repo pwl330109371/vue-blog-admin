@@ -1,17 +1,17 @@
 /*
  * @Author: your name
  * @Date: 2021-01-27 14:54:44
- * @LastEditTime: 2021-01-27 14:58:04
- * @LastEditors: your name
+ * @LastEditTime: 2021-01-29 22:50:01
+ * @LastEditors: Peng wenlei
  * @Description: In User Settings Edit
  * @FilePath: \vue-blog-admin\src\api\article.js
  */
 import serve from '@/utils/request'
 
 // 发布文章
-export function addArticle(data) {
+export function createArticle(data) {
   return serve({
-    url: '/api/article/add',
+    url: '/api/article/addArticle',
     method: 'POST',
     data
   })

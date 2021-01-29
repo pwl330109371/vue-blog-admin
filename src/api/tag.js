@@ -1,8 +1,8 @@
 /*
  * @Author: your name
  * @Date: 2021-01-27 14:54:00
- * @LastEditTime: 2021-01-28 18:04:59
- * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2021-01-29 20:49:01
+ * @LastEditors: Peng wenlei
  * @Description: In User Settings Edit
  * @FilePath: \vue-blog-admin\src\api\tag.js
  */
@@ -24,9 +24,18 @@ export function createCategory(data) {
 }
 
 // 获取标签列表
-export function getCategoryList(data) {
+export function getCategoryList(params) {
   return serve({
     url: '/api/category/getCategory',
+    method: 'GET',
+    params
+  })
+}
+
+// 删除标签
+export function delCategory(data) {
+  return serve({
+    url: '/api/category/delCategory',
     method: 'POST',
     data
   })

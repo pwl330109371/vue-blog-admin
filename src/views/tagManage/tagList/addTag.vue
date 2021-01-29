@@ -1,8 +1,8 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-27 18:44:21
- * @LastEditTime: 2021-01-28 18:03:01
- * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2021-01-29 20:25:31
+ * @LastEditors: Peng wenlei
  * @Description: In User Settings Edit
  * @FilePath: \vue-blog-admin\src\views\tagManage\tagList\addTag.vue
 -->
@@ -67,6 +67,7 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           this.$emit('createParentTag', this.form.name)
+          this.resetForm('ruleForm')
         } else {
           console.log('error submit!!')
           return false

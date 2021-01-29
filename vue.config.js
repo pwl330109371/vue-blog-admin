@@ -30,11 +30,13 @@ module.exports = {
   lintOnSave: process.env.NODE_ENV === 'development',
   productionSourceMap: false,
   devServer: {
-    open: true, // 自动启动浏览器
-    host: '0.0.0.0', // localhost
-    port: port, // 端口号
+    port: port,
+    open: true,
     https: false,
-    hotOnly: true, // 热更新
+    overlay: {
+      warnings: false,
+      errors: true
+    },
     proxy: {
       '^/api': {
         target: process.env.VUE_APP_BASE_API,
@@ -42,7 +44,7 @@ module.exports = {
         changeOrigin: true
       }
     }
-    // before: require('./mock/mock-server.js')
+    // before: require('./mock/mock-server.js') // 这里打开可能会出现代理不通的问题
   },
   // devServer: {
   //   port: port,

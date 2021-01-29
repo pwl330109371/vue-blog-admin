@@ -1,8 +1,8 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-27 11:22:21
- * @LastEditTime: 2021-01-27 17:50:13
- * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2021-01-29 23:05:48
+ * @LastEditors: Peng wenlei
  * @Description: In User Settings Edit
  * @FilePath: \vue-blog-admin\src\views\articleManage\createArticle\index.vue
 -->
@@ -31,18 +31,28 @@
           </el-row>
           <el-row class="demo-autocomplete" :gutter="20">
             <el-col :lg="10" :md="12" :xs="24">
-              <el-form-item label="选择分类" prop="fTagId">
-                <el-select v-model="form.fTagId" clearable placeholder="请选择" @change="selectTag">
+              <el-form-item label="选择分类" prop="categoryId">
+                <el-cascader
+                  v-model="form.categoryId"
+                  :options="options"
+                  :props="{ children: 'subcategories', value: 'id', label: 'name' }"
+                >
+                  <template slot-scope="{ node, data }">
+                    <span>{{ data.name }}</span>
+                    <span v-if="!node.isLeaf"> ({{ data.subcategories.length }}) </span>
+                  </template>
+                </el-cascader>
+                <!-- <el-select v-model="form.categoryId" clearable placeholder="请选择" @change="selectTag">
                   <el-option
                     v-for="item in fTagList"
                     :key="item._id"
                     :label="item.name"
                     :value="item._id"
                   />
-                </el-select>
+                </el-select> -->
               </el-form-item>
             </el-col>
-            <el-col :lg="10" :md="12" :xs="24">
+            <!-- <el-col :lg="10" :md="12" :xs="24">
               <el-form-item label="二级分类" prop="cTagId">
                 <el-select v-model="form.cTagId" multiple placeholder="请选择">
                   <el-option
@@ -54,7 +64,7 @@
                   />
                 </el-select>
               </el-form-item>
-            </el-col>
+            </el-col> -->
           </el-row>
           <el-form-item label="封面和摘要">
             <div class="bottomMiddle">
@@ -112,9 +122,9 @@
 
 <script>
 import Tinymce from '@/components/Tinymce'
-import { getTagist, getTagChildList } from '@/api/tag'
+import { getCategoryList } from '@/api/tag'
 import { uploadImgs } from '@/api/upload'
-import { addArticle } from '@/api/article'
+import { createArticle } from '@/api/article'
 export default {
   components: {
     Tinymce
@@ -123,6 +133,7 @@ export default {
     return {
       labelPosition: 'left',
       limit: 1, // 图片上传数量
+      options: [],
       fileList: [], // 图片列表
       fTagList: [], // 一级标签
       cTagList: [], // 二级标签
@@ -134,12 +145,12 @@ export default {
         author: '', // 作者
         content: '', // 内容
         make: '', // 描述
-        fTagId: '', // 一级选中的id
-        cTagId: [] // 二级选中的List
+        categoryId: '' // 一级选中的id
+        // cTagId: [] // 二级选中的List
       },
       rule: {
-        fTagId: [{ required: true, message: '请选择一级分类', trigger: 'blur' }],
-        cTagId: [{ required: true, message: '请选择二级分类', trigger: 'blur' }],
+        categoryId: [{ required: true, message: '请选择一级分类', trigger: 'blur' }],
+        // cTagId: [{ required: true, message: '请选择二级分类', trigger: 'blur' }],
         title: [{ required: true, message: '标题不能为空', trigger: 'blur' }],
         content: [{ required: true, message: '内容不能为空', trigger: 'blur' }]
       }
@@ -156,33 +167,19 @@ export default {
     }
   },
   mounted() {
-    this.getTagist() // 获取一级分类
+    this.getCategoryList() // 获取一级分类
     console.log(this.device)
     this.labelPosition = this.device === 'desktop' ? 'left' : 'top' // 兼容手机端
   },
   methods: {
-    // 选中一级分类
-    selectTag(e) {
-      this.form.fTagId = e
-      this.form.cTagId = [] // 切换重置已经选中的标签
-      this.getTagChildList(e)
+    // 获取分类
+    async getCategoryList() {
+      const { data } = await getCategoryList()
+      this.options = data
     },
-    // 获取一级分类
-    async getTagist() {
-      const { data } = await getTagist()
-      if (data.data.length === 0) {
-        return
-      }
-      this.fTagList = data.data
-      this.getTagChildList(this.fTagList[0]._id)
-    },
-    // 获取二级分类
-    async getTagChildList(id) {
-      const { data } = await getTagChildList(id)
-      if (data.data.length === 0) {
-        return
-      }
-      this.cTagList = data.data
+    // 选择分类
+    handleChange(e) {
+      console.log(e)
     },
     // 发布文章
     async saveClick(formName) {
@@ -193,18 +190,18 @@ export default {
           if (this.fileList.length !== 0) {
             await uploadImgs(this.fileData).then((res) => {
               console.log(res)
-              this.fileInfo = res.data.filename
+              this.fileInfo = res.data
             })
           }
           const params = {
             title: this.form.title, // 标题
             author: this.form.author, // 发布人
-            articleImg: this.fileInfo, // 封面
-            tagList: this.form.cTagId, // 标签
+            picture: this.fileInfo, // 封面
+            categoryId: this.form.categoryId[1], // 标签
             describe: this.form.make, // 简介
             content: this.form.content // 资讯内容
           }
-          const { data } = await addArticle(params)
+          const { data } = await createArticle(params)
           if (data.state === 200) {
             this.$message.success('创建成功!')
             // this.$router.push({ path:'information'})
@@ -254,7 +251,7 @@ export default {
   }
   .demo-autocomplete {
     width: 100%;
-    .el-select {
+    .el-select, .el-cascader {
       width: 100%;
     }
   }
