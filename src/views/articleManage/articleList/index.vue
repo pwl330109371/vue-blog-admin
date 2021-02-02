@@ -1,8 +1,8 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-27 11:17:36
- * @LastEditTime: 2021-01-28 11:01:56
- * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2021-02-02 22:47:44
+ * @LastEditors: Peng wenlei
  * @Description: In User Settings Edit
  * @FilePath: \vue-blog-admin\src\views\articleManage\articleList\index.vue
 -->
@@ -23,19 +23,45 @@
             <template slot-scope="scope">{{ scope.$index + 1 }}</template>
           </el-table-column>
           <el-table-column
-            prop="date"
+            prop="title"
+            label="标题"
+            width="180"
+            align="center"
+          />
+          <el-table-column
             label="创建时间"
             width="180"
             align="center"
-          />
+          >
+            <template slot-scope="scope">
+              {{ scope.row.createdAt | formatDate }}
+            </template>
+          </el-table-column>
           <el-table-column
-            prop="name"
+            prop="date"
+            label="封面图片"
+            width="180"
+            align="center"
+          >
+            <template slot-scope="scope">
+              <el-image
+                style="width: 100px; height: 100px"
+                :src="scope.row.picture"
+                fit="contain"
+              />
+            </template>
+          </el-table-column>
+          <el-table-column
             label="发布人"
             width="180"
             align="center"
-          />
+          >
+            <template slot-scope="scope">
+              {{ scope.row.user.nickName }}
+            </template>
+          </el-table-column>
           <el-table-column
-            prop="name"
+            prop="visitsNum"
             label="浏览量"
             width="180"
             align="center"
@@ -46,15 +72,9 @@
             align="center"
           >
             <template slot-scope="scope">
-              <el-tag v-if="scope.row.sex === 1">男</el-tag>
-              <el-tag v-if="scope.row.sex === 2" type="danger">女</el-tag>
-              <el-tag v-if="scope.row.sex === 3" type="warning">保密</el-tag>
+              <el-tag>{{ scope.row.categoryName }}</el-tag>
             </template>
           </el-table-column>
-          <el-table-column
-            prop="address"
-            label="地址"
-          />
           <el-table-column label="操作">
             <template slot-scope="scope">
               <el-button
@@ -78,7 +98,7 @@
             background
             layout="prev, pager, next"
             :current-change="handleChange"
-            :total="100"
+            :total="req.total"
           />
         </div>
       </el-tab-pane>
@@ -87,33 +107,39 @@
 </template>
 
 <script>
+import { getArticleList } from '@/api/article'
+import { formatDate } from '@/utils'
 export default {
-  data() {
-    return {
-      tableData: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        sex: 1,
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        sex: 2,
-        address: '上海市普陀区金沙江路 1517 弄'
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        sex: 3,
-        address: '上海市普陀区金沙江路 1519 弄'
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        sex: 1,
-        address: '上海市普陀区金沙江路 1516 弄'
-      }]
+  filters: {
+    formatDate(val) {
+      return formatDate(val, 'yyyy-MM-dd hh:mm:ss')
     }
   },
+  data() {
+    return {
+      req: {
+        pageIndex: 1,
+        pageSize: 10,
+        total: 0
+      },
+      tableData: [] // 文章列表
+    }
+  },
+  mounted() {
+    this.getArticleList()
+  },
   methods: {
+    // 获取文章列表
+    async getArticleList() {
+      const params = {
+        keyword: '',
+        pageIndex: this.req.pageIndex,
+        pageSize: this.req.pageSize
+      }
+      const { data } = await getArticleList(params)
+      this.tableData = data.rows
+      this.req.total = data.total
+    },
     // 分页获取用户列表
     handleChange(e) {
       console.log(e)

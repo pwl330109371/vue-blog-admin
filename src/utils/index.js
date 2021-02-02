@@ -1,3 +1,10 @@
+/*
+ * @Description: 文件描述
+ * @Author: Peng wenlei
+ * @Date: 2021-01-28 20:25:07
+ * @LastEditTime: 2021-02-02 22:41:34
+ * @LastEditors: Peng wenlei
+ */
 /**
  * Created by PanJiaChen on 16/11/18.
  */
@@ -49,6 +56,29 @@ export function parseTime(time, cFormat) {
     return value.toString().padStart(2, '0')
   })
   return time_str
+}
+
+export function formatDate(date, format) {
+  console.log(date)
+  if (typeof format === 'string') format = format.replace(/-/g, '/').replace(/\./g, '/') // 兼容safari
+  var dateObj = new Date(date)
+  console.log(dateObj)
+  var year = dateObj.getFullYear()
+  var month = dateObj.getMonth() + 1
+  var day = dateObj.getDate()
+  var hour = dateObj.getHours()
+  var minute = dateObj.getMinutes()
+  var second = dateObj.getSeconds()
+  //  console.log(month)
+  var formatStr = format || 'yyyy/MM/dd hh:mm:ss'
+
+  return formatStr
+    .replace(/yyyy/g, year)
+    .replace(/MM/g, ('0' + month).slice(-2))
+    .replace(/dd/g, ('0' + day).slice(-2))
+    .replace(/hh/g, ('0' + hour).slice(-2))
+    .replace(/mm/g, ('0' + minute).slice(-2))
+    .replace(/ss/g, ('0' + second).slice(-2))
 }
 
 /**

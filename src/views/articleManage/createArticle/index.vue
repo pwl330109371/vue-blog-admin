@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-27 11:22:21
- * @LastEditTime: 2021-01-29 23:05:48
+ * @LastEditTime: 2021-02-02 21:44:46
  * @LastEditors: Peng wenlei
  * @Description: In User Settings Edit
  * @FilePath: \vue-blog-admin\src\views\articleManage\createArticle\index.vue
@@ -33,9 +33,12 @@
             <el-col :lg="10" :md="12" :xs="24">
               <el-form-item label="选择分类" prop="categoryId">
                 <el-cascader
+                  ref="cascader"
                   v-model="form.categoryId"
                   :options="options"
+                  placeholder="请选择分类"
                   :props="{ children: 'subcategories', value: 'id', label: 'name' }"
+                  @change="handleChange"
                 >
                   <template slot-scope="{ node, data }">
                     <span>{{ data.name }}</span>
@@ -110,7 +113,7 @@
           <el-row class="demo-autocomplete">
             <el-col :lg="20" :md="18" :xs="24">
               <el-form-item class="bottom">
-                <el-button type="primary" @click="saveClick('form')">保存</el-button>
+                <el-button type="primary" :loading="isLoading" @click="saveClick('form')">{{ isLoading ? '提交中' : '保存' }}</el-button>
               </el-form-item>
             </el-col>
           </el-row>
@@ -133,24 +136,21 @@ export default {
     return {
       labelPosition: 'left',
       limit: 1, // 图片上传数量
-      options: [],
+      options: [], // 分类集合
       fileList: [], // 图片列表
-      fTagList: [], // 一级标签
-      cTagList: [], // 二级标签
-      fileData: '',
-      fileId: '',
-      fileInfo: '',
+      fileData: '', // 上传文件对象
+      fileInfo: '', // 上传封面链接
+      isLoading: false, // 是否提交
       form: {
         title: '', // 标题
         author: '', // 作者
         content: '', // 内容
         make: '', // 描述
+        categoryName: '', // 标签名称
         categoryId: '' // 一级选中的id
-        // cTagId: [] // 二级选中的List
       },
       rule: {
         categoryId: [{ required: true, message: '请选择一级分类', trigger: 'blur' }],
-        // cTagId: [{ required: true, message: '请选择二级分类', trigger: 'blur' }],
         title: [{ required: true, message: '标题不能为空', trigger: 'blur' }],
         content: [{ required: true, message: '内容不能为空', trigger: 'blur' }]
       }
@@ -168,7 +168,6 @@ export default {
   },
   mounted() {
     this.getCategoryList() // 获取一级分类
-    console.log(this.device)
     this.labelPosition = this.device === 'desktop' ? 'left' : 'top' // 兼容手机端
   },
   methods: {
@@ -179,7 +178,9 @@ export default {
     },
     // 选择分类
     handleChange(e) {
-      console.log(e)
+      const nodesObj = this.$refs['cascader'].getCheckedNodes()
+      this.form.categoryName = nodesObj[0].label
+      this.form.categoryId = nodesObj[0].value
     },
     // 发布文章
     async saveClick(formName) {
@@ -197,12 +198,13 @@ export default {
             title: this.form.title, // 标题
             author: this.form.author, // 发布人
             picture: this.fileInfo, // 封面
-            categoryId: this.form.categoryId[1], // 标签
+            categoryId: this.form.categoryId, // 标签
+            categoryName: this.form.categoryName, // 标签名称
             describe: this.form.make, // 简介
             content: this.form.content // 资讯内容
           }
-          const { data } = await createArticle(params)
-          if (data.state === 200) {
+          const { code } = await createArticle(params)
+          if (code === 200) {
             this.$message.success('创建成功!')
             // this.$router.push({ path:'information'})
             this.$refs[formName].resetFields()

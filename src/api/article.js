@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-27 14:54:44
- * @LastEditTime: 2021-01-29 22:50:01
+ * @LastEditTime: 2021-02-02 21:46:30
  * @LastEditors: Peng wenlei
  * @Description: In User Settings Edit
  * @FilePath: \vue-blog-admin\src\api\article.js
@@ -18,11 +18,11 @@ export function createArticle(data) {
 }
 
 // 获取文章列表
-export function getArticleList(data) {
+export function getArticleList(params) {
   return serve({
-    url: '/api/article/list',
-    method: 'POST',
-    data
+    url: '/api/article/getArticleList',
+    method: 'GET',
+    params
   })
 }
 
