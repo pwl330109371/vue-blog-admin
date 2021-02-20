@@ -1,8 +1,8 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-27 11:30:15
- * @LastEditTime: 2021-01-29 20:40:15
- * @LastEditors: Peng wenlei
+ * @LastEditTime: 2021-02-20 14:15:29
+ * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-blog-admin\src\views\tagManage\tagList\index.vue
 -->
@@ -34,7 +34,7 @@
                 v-model="inputValue[index]"
                 class="input-new-tag"
                 size="small"
-                @keyup.enter.native="handleInputConfirm(item.id, index)"
+                @keyup.enter.native="$event.target.blur"
                 @blur="handleInputConfirm(item.id, index)"
               />
               <el-button v-else class="button-new-tag" size="small" @click="showInput(index)">+ New Tag</el-button>
@@ -119,8 +119,10 @@ export default {
       }
     },
     showInput(index) {
+      console.log(index)
       this.inputVisible = index
       this.$nextTick(_ => {
+        console.log(this.$refs.saveTagInput[index])
         this.$refs.saveTagInput[index].$refs.input.focus()
       })
     },
