@@ -1,8 +1,8 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-27 11:17:36
- * @LastEditTime: 2021-02-02 22:47:44
- * @LastEditors: Peng wenlei
+ * @LastEditTime: 2021-02-23 10:39:49
+ * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-blog-admin\src\views\articleManage\articleList\index.vue
 -->
@@ -79,7 +79,7 @@
             <template slot-scope="scope">
               <el-button
                 size="mini"
-                @click="handleEdit(scope.$index, scope.row)"
+                @click="handleEdit(scope.row)"
               >
                 编辑
               </el-button>
@@ -139,6 +139,10 @@ export default {
       const { data } = await getArticleList(params)
       this.tableData = data.rows
       this.req.total = data.total
+    },
+    // 编辑
+    handleEdit(row) {
+      console.log(row)
     },
     // 分页获取用户列表
     handleChange(e) {

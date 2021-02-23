@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-27 11:13:32
- * @LastEditTime: 2021-01-27 14:43:10
+ * @LastEditTime: 2021-02-23 18:48:43
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-blog-admin\src\views\userManger\userList\index.vue
@@ -10,6 +10,7 @@
   <div>
     <el-tabs type="border-card">
       <el-tab-pane label="用户管理">
+        <el-button type="primary" class="creata-btn" size="small" @click="createUser">创建用户<i class="el-icon-user el-icon--right" /></el-button>
         <el-table
           :data="tableData"
           border
@@ -27,15 +28,19 @@
             label="注册时间"
             width="180"
             align="center"
-          />
+          >
+            <template slot-scope="scope">
+              {{ scope.row.createdAt | formatTime }}
+            </template>
+          </el-table-column>
           <el-table-column
-            prop="name"
+            prop="userName"
             label="用户名"
             width="180"
             align="center"
           />
           <el-table-column
-            prop="name"
+            prop="nickName"
             label="昵称"
             width="180"
             align="center"
@@ -46,27 +51,27 @@
             align="center"
           >
             <template slot-scope="scope">
-              <el-tag v-if="scope.row.sex === 1">男</el-tag>
-              <el-tag v-if="scope.row.sex === 2" type="danger">女</el-tag>
-              <el-tag v-if="scope.row.sex === 3" type="warning">保密</el-tag>
+              <el-tag v-if="scope.row.gender == 1">男</el-tag>
+              <el-tag v-if="scope.row.gender == 2" type="danger">女</el-tag>
+              <el-tag v-if="scope.row.gender == 3" type="warning">保密</el-tag>
             </template>
           </el-table-column>
           <el-table-column
-            prop="address"
+            prop="city"
             label="地址"
           />
           <el-table-column label="操作">
             <template slot-scope="scope">
               <el-button
                 size="mini"
-                @click="handleEdit(scope.$index, scope.row)"
+                @click="handleEdit(scope.row)"
               >
                 编辑
               </el-button>
               <el-button
                 size="mini"
                 type="danger"
-                @click="handleDelete(scope.$index, scope.row)"
+                @click="handleDelete(scope.$index, scope.row.id)"
               >
                 删除
               </el-button>
@@ -78,51 +83,76 @@
             background
             layout="prev, pager, next"
             :current-change="handleChange"
-            :total="100"
+            :total="10"
           />
         </div>
       </el-tab-pane>
     </el-tabs>
+    <addUser />
   </div>
 </template>
 
 <script>
+import { getUserList } from '@/api/user'
+import bus from '@/views/bus'
+import addUser from './addUser'
 export default {
+  components: {
+    addUser
+  },
   data() {
     return {
-      tableData: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        sex: 1,
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        sex: 2,
-        address: '上海市普陀区金沙江路 1517 弄'
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        sex: 3,
-        address: '上海市普陀区金沙江路 1519 弄'
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        sex: 1,
-        address: '上海市普陀区金沙江路 1516 弄'
-      }]
+      tableData: [] // 用户列表
     }
+  },
+  mounted() {
+    this.getUserList()
   },
   methods: {
     // 分页获取用户列表
     handleChange(e) {
       console.log(e)
+    },
+    // 获取用户列表
+    async getUserList() {
+      const { data } = await getUserList()
+      this.tableData = data
+    },
+    // 创建用户
+    createUser() {
+      bus.$emit('creataUser', 1)
+    },
+    // 用户信息编辑
+    handleEdit(row) {
+      bus.$emit('creataUser', row)
+    },
+    // 删除用户
+    handleDelete(index, id) {
+      this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        })
+        this.tableData.splice(1, index)
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
+  .creata-btn {
+    margin-bottom: 15px;
+  }
   .pagination {
     padding: 20px 0;
     text-align: center;

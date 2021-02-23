@@ -1,3 +1,11 @@
+/*
+ * @Author: your name
+ * @Date: 2021-01-27 10:43:21
+ * @LastEditTime: 2021-02-22 18:23:44
+ * @LastEditors: your name
+ * @Description: In User Settings Edit
+ * @FilePath: \vue-blog-admin\src\main.js
+ */
 import Vue from 'vue'
 
 import 'normalize.css/normalize.css' // A modern alternative to CSS resets
@@ -31,6 +39,10 @@ if (process.env.NODE_ENV === 'production') {
 Vue.use(ElementUI, { locale })
 // 如果想要中文版 element-ui，按如下方式声明
 // Vue.use(ElementUI)
+
+// 全局过滤器
+import * as filters from '@/utils/filters'
+Object.keys(filters).forEach(k => Vue.filter(k, filters[k]))
 
 Vue.config.productionTip = false
 
