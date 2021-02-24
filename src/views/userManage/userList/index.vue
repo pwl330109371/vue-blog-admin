@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-27 11:13:32
- * @LastEditTime: 2021-02-23 18:48:43
+ * @LastEditTime: 2021-02-24 17:43:56
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-blog-admin\src\views\userManger\userList\index.vue
@@ -88,12 +88,12 @@
         </div>
       </el-tab-pane>
     </el-tabs>
-    <addUser />
+    <addUser @updata="updata" />
   </div>
 </template>
 
 <script>
-import { getUserList } from '@/api/user'
+import { getUserList, deleteUser } from '@/api/user'
 import bus from '@/views/bus'
 import addUser from './addUser'
 export default {
@@ -126,18 +126,25 @@ export default {
     handleEdit(row) {
       bus.$emit('creataUser', row)
     },
+    // 更新数据
+    updata() {
+      this.getUserList()
+    },
     // 删除用户
     handleDelete(index, id) {
       this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(() => {
-        this.$message({
-          type: 'success',
-          message: '删除成功!'
-        })
-        this.tableData.splice(1, index)
+      }).then(async() => {
+        const { code } = await deleteUser(id)
+        if (code === 200) {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+          this.tableData.splice(index, 1)
+        }
       }).catch(() => {
         this.$message({
           type: 'info',

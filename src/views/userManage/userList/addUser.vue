@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-02-23 15:12:07
- * @LastEditTime: 2021-02-23 17:03:40
+ * @LastEditTime: 2021-02-24 18:09:49
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-blog-admin\src\views\userManage\userList\addUser.vue
@@ -10,7 +10,7 @@
   <div>
     <el-dialog title="创建用户" :visible.sync="dialogFormVisible" :width="dialogWidth">
       <el-form ref="ruleForm" :model="form" :label-position="labelPosition" :rules="rules">
-        <el-form-item label="用户名" :label-width="formLabelWidth" prop="userName">
+        <el-form-item v-if="type === 1" label="用户名" :label-width="formLabelWidth" prop="userName">
           <el-input
             v-model="form.userName"
             autocomplete="off"
@@ -77,7 +77,7 @@
 <script>
 import bus from '@/views/bus'
 import { uploadImgs } from '@/api/upload'
-import { registerUser } from '@/api/user'
+import { registerUser, editUserInfo } from '@/api/user'
 export default {
   data() {
     return {
@@ -126,8 +126,8 @@ export default {
       this.dialogFormVisible = true
       this.type = data === 1 ? 1 : 2 // 1 添加 2 编辑
       this.title = data === 1 ? '创建用户' : '编辑用户'
-      if (typeof (data) === 'object') {
-        this.form = data
+      if (typeof (data) === 'object') { // 编辑 图片回选
+        this.form = Object.assign({}, data)
         if (data.picture) {
           this.fileInfo = data.picture
           this.fileList.push({
@@ -161,16 +161,29 @@ export default {
             })
           }
           const params = {
-            userName: this.form.userName,
-            password: this.form.password,
             picture: this.fileInfo,
             gender: this.form.gender,
-            nickName: this.form.nickName
+            nickName: this.form.nickName,
+            userId: this.id
           }
-          const { code } = await registerUser(params)
-          if (code === 200) {
-            this.$message.success('创建成功!')
-            this.resetForm('ruleForm')
+
+          if (this.type === 1) { // 创建
+            params.userName = this.form.userName
+            params.password = this.form.password
+            const { code } = await registerUser(params)
+            if (code === 200) {
+              this.$message.success('创建成功!')
+              this.resetForm('ruleForm')
+              this.$emit('updata')
+            }
+          } else { // 编辑
+            params.userId = this.form.id
+            const { code } = await editUserInfo(params)
+            if (code === 200) {
+              this.$message.success('编辑成功!')
+              this.resetForm('ruleForm')
+              this.$emit('updata')
+            }
           }
           this.fileInfo = ''
         }

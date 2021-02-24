@@ -1,7 +1,7 @@
 /*
  * @Author: pwl
  * @Date: 2021-01-27 10:43:21
- * @LastEditTime: 2021-02-23 17:19:02
+ * @LastEditTime: 2021-02-24 11:57:06
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-blog-admin\src\api\user.js
@@ -34,6 +34,34 @@ export function login(data) {
 export function registerUser(data) {
   return request({
     url: '/api/users/register',
+    method: 'post',
+    data
+  })
+}
+
+/**
+ * @description: 删除用户
+ * @param {string} userId 用户id
+ * @return {*}
+ */
+export function deleteUser(userId) {
+  return request({
+    url: '/api/users/deleteUser?userId=' + userId,
+    method: 'delete'
+  })
+}
+
+/**
+ * @description: 编辑用户
+ * @param {string} password 密码
+ * @param {string} gender 性别 1 男 2 女 3 保密
+ * @param {string} nickName 昵称
+ * @param {string} picture 头像
+ * @return {*}
+ */
+export function editUserInfo(data) {
+  return request({
+    url: '/api/users/editUserInfo',
     method: 'post',
     data
   })
