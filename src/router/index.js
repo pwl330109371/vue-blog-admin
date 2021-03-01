@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-27 10:43:21
- * @LastEditTime: 2021-01-27 15:00:18
+ * @LastEditTime: 2021-03-01 16:16:50
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-blog-admin\src\router\index.js
@@ -125,7 +125,17 @@ export const constantRoutes = [
       }
     ]
   },
-
+  {
+    path: '/aboutMe',
+    component: Layout,
+    redirect: '/aboutMe',
+    children: [{
+      path: 'aboutMe',
+      name: 'AboutMe',
+      component: () => import('@/views/aboutMe/index'),
+      meta: { title: '关于我', icon: 'dashboard' }
+    }]
+  },
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
 ]

@@ -1,7 +1,7 @@
 /*
  * @Author: pwl
  * @Date: 2021-01-27 10:43:21
- * @LastEditTime: 2021-02-24 11:57:06
+ * @LastEditTime: 2021-03-01 18:06:22
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-blog-admin\src\api\user.js
@@ -69,7 +69,7 @@ export function editUserInfo(data) {
 
 /**
  * @description: 获取用户信息
- * @param {userId} userId
+ * @param {number} userId 用户id
  * @return {*}
  */
 export function getInfo(userId) {
@@ -90,9 +90,49 @@ export function getUserList() {
   })
 }
 
+/**
+ * @description: 添加关于用户内容
+ * @param {string} content 内容
+ * @return {*}
+ */
+export function addAboutContent(data) {
+  return request({
+    url: '/api/about/addAbout',
+    method: 'post',
+    data
+  })
+}
+
+/**
+ * @description: 编辑关于用户内容
+ * @param {number} id id
+ * @param {string} content 内容
+ * @return {*}
+ */
+export function editAboutContent(data) {
+  return request({
+    url: '/api/about/editAbout',
+    method: 'put',
+    data
+  })
+}
+
+/**
+ * @description: 获取关于用户内容
+ * @param {number} userId id
+ * @return {*}
+ */
+export function getAboutContent(userId) {
+  return request({
+    url: '/api/about/getAboutContent?userId=' + userId,
+    method: 'get'
+  })
+}
+
 export function logout() {
   return request({
     url: '/vue-admin-template/user/logout',
     method: 'post'
   })
 }
+
