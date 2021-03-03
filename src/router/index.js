@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-27 10:43:21
- * @LastEditTime: 2021-03-01 16:16:50
+ * @LastEditTime: 2021-03-03 11:38:44
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-blog-admin\src\router\index.js
@@ -41,7 +41,7 @@ import Layout from '@/layout'
 export const constantRoutes = [
   {
     path: '/login',
-    component: () => import('@/views/login/index'),
+    component: () => import('@/views/login/index1'),
     hidden: true
   },
 
