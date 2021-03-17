@@ -57,6 +57,28 @@
             </template>
           </el-table-column>
           <el-table-column
+            label="角色"
+            width="120"
+            align="center"
+          >
+            <template slot-scope="scope">
+              <el-tag v-if="scope.row.role === 1">超级管理员</el-tag>
+              <el-tag v-if="scope.row.role === 2" type="danger">管理员</el-tag>
+              <el-tag v-if="scope.row.role === 3" type="warning">普通用户</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="头像"
+            width="100"
+            align="center"
+          >
+            <template slot-scope="scope">
+              <el-image
+                :src='scope.row.picture'
+              ></el-image>
+            </template>
+          </el-table-column>
+          <el-table-column
             prop="city"
             label="地址"
           />
@@ -96,6 +118,7 @@
 import { getUserList, deleteUser } from '@/api/user'
 import bus from '@/views/bus'
 import addUser from './addUser'
+
 export default {
   components: {
     addUser

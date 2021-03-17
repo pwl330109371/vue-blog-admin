@@ -8,7 +8,7 @@
 -->
 <template>
   <div>
-    <el-dialog title="创建用户" :visible.sync="dialogFormVisible" :width="dialogWidth">
+    <el-dialog :title="title" :visible.sync="dialogFormVisible" :width="dialogWidth">
       <el-form ref="ruleForm" :model="form" :label-position="labelPosition" :rules="rules">
         <el-form-item v-if="type === 1" label="用户名" :label-width="formLabelWidth" prop="userName">
           <el-input
@@ -43,6 +43,13 @@
             <el-radio label="1">男</el-radio>
             <el-radio label="2">女</el-radio>
             <el-radio label="3">保密</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="角色" :label-width="formLabelWidth" prop="role">
+          <el-radio-group v-model="form.role">
+            <el-radio :label=1>超级管理员</el-radio>
+            <el-radio :label=2>管理员</el-radio>
+            <el-radio :label=3>普通用户</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="头像" :label-width="formLabelWidth">
@@ -86,8 +93,10 @@ export default {
         userName: '', // 用户名
         password: '', // 密码
         nickName: '', // 昵称
-        gender: '1' // 性别 1 男 2 女 3 保密
+        gender: '1', // 性别 1 男 2 女 3 保密
+        role: 3 // 超级管理员 1  管理员 2  普通用户 3
       },
+      title: '创建用户',
       type: 1, // 1 添加 2 编辑
       limit: 1,
       fileList: [], // 图片列表
@@ -111,6 +120,9 @@ export default {
         ],
         gender: [
           { required: true, message: '请选择性别', trigger: 'blur' }
+        ],
+        role: [
+          { required: true, message: '请选择角色', trigger: 'blur' }
         ]
       }
     }
@@ -123,11 +135,13 @@ export default {
   mounted() {
     bus.$off('creataUser')
     bus.$on('creataUser', (data) => {
+      console.log(data)
       this.dialogFormVisible = true
       this.type = data === 1 ? 1 : 2 // 1 添加 2 编辑
       this.title = data === 1 ? '创建用户' : '编辑用户'
+      console.log(this.type, this.title)
       if (typeof (data) === 'object') { // 编辑 图片回选
-        this.form = Object.assign({}, data)
+        this.form = Object.assign({}, data) // 数据回选
         if (data.picture) {
           this.fileInfo = data.picture
           this.fileList.push({
@@ -155,7 +169,7 @@ export default {
         if (valid) {
           this.$refs.upload.submit()
           // 如果没有上传图片就不走上传图片的请求
-          if (this.fileList.length !== 0) {
+          if (this.fileList.length !== 0 && this.fileInfo === '') {
             await uploadImgs(this.fileData).then((res) => {
               this.fileInfo = res.data
             })
@@ -164,6 +178,7 @@ export default {
             picture: this.fileInfo,
             gender: this.form.gender,
             nickName: this.form.nickName,
+            role: this.form.role,
             userId: this.id
           }
 
