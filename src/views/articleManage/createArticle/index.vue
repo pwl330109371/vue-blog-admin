@@ -1,8 +1,8 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-27 11:22:21
- * @LastEditTime: 2021-02-02 21:44:46
- * @LastEditors: Peng wenlei
+ * @LastEditTime: 2021-04-01 17:29:51
+ * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-blog-admin\src\views\articleManage\createArticle\index.vue
 -->
@@ -106,7 +106,13 @@
           <el-row class="demo-autocomplete">
             <el-col :lg="20" :md="18" :xs="24">
               <el-form-item label="内容" class="content" prop="content">
-                <tinymce v-model="form.content" class="tinymce" :height="300" />
+                <tinymce
+                  ref="editor"
+                  v-model="form.content"
+                  class="tinymce"
+                  :height="300"
+                  :is-inline="false"
+                />
               </el-form-item>
             </el-col>
           </el-row>
