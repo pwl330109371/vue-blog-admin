@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-27 10:43:21
- * @LastEditTime: 2021-03-03 11:38:44
+ * @LastEditTime: 2021-04-10 14:50:20
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-blog-admin\src\router\index.js
@@ -107,6 +107,27 @@ export const constantRoutes = [
         name: 'createArticle',
         component: () => import('@/views/articleManage/createArticle/'),
         meta: { title: '发布文章', icon: 'tree' }
+      }
+    ]
+  },
+  {
+    path: '/imgManage',
+    component: Layout,
+    redirect: '/imgManage/imgList',
+    name: 'imgManage',
+    meta: { title: '图片管理', icon: 'el-icon-s-help' },
+    children: [
+      {
+        path: 'imgList',
+        name: 'imgList',
+        component: () => import('@/views/imgManage/'),
+        meta: { title: '图片列表', icon: 'table' }
+      },
+      {
+        path: 'createImg',
+        name: 'createImg',
+        component: () => import('@/views/imgManage/create'),
+        meta: { title: '添加图片', icon: 'tree' }
       }
     ]
   },

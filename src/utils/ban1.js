@@ -1,7 +1,7 @@
 var canvas = document.getElementsByClassName('cavs')
 var ctx = canvas.getContext('2d')
 var dots = {
-  nb: 250,
+  nb: 150,
   distance: 100,
   d_radius: 150,
   array: []
