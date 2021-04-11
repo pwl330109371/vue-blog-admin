@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-27 10:43:21
- * @LastEditTime: 2021-04-10 14:50:20
+ * @LastEditTime: 2021-04-11 17:26:00
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-blog-admin\src\router\index.js
@@ -38,6 +38,7 @@ import Layout from '@/layout'
  * a base page that does not have permission requirements
  * all roles can be accessed
  */
+
 export const constantRoutes = [
   {
     path: '/login',

@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-27 11:17:36
- * @LastEditTime: 2021-02-23 10:39:49
+ * @LastEditTime: 2021-04-11 16:36:35
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-blog-admin\src\views\articleManage\articleList\index.vue
@@ -107,7 +107,7 @@
 </template>
 
 <script>
-import { getArticleList } from '@/api/article'
+import { getArticleList, delArticle } from '@/api/article'
 import { formatDate } from '@/utils'
 export default {
   filters: {
@@ -143,6 +143,31 @@ export default {
     // 编辑
     handleEdit(row) {
       console.log(row)
+    },
+    // 删除
+    handleDelete(index, row) {
+      this.$confirm('此操作将永久删除该文章, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.delArticle(index, row.id)
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    },
+    async delArticle(index, id) {
+      const { code } = await delArticle(id)
+      if (code === 200) {
+        this.tableData.splice(1, index)
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        })
+      }
     },
     // 分页获取用户列表
     handleChange(e) {

@@ -1,8 +1,8 @@
 /*
  * @Author: your name
  * @Date: 2021-01-27 14:54:44
- * @LastEditTime: 2021-02-02 21:46:30
- * @LastEditors: Peng wenlei
+ * @LastEditTime: 2021-04-11 16:38:37
+ * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-blog-admin\src\api\article.js
  */
@@ -14,6 +14,14 @@ export function createArticle(data) {
     url: '/api/article/addArticle',
     method: 'POST',
     data
+  })
+}
+
+// 删除文章
+export function delArticle(id) {
+  return serve({
+    url: '/api/article/delArticle?articleId=' + id,
+    method: 'DELETE'
   })
 }
 

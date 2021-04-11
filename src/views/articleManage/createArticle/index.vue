@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-27 11:22:21
- * @LastEditTime: 2021-04-01 17:29:51
+ * @LastEditTime: 2021-04-11 18:17:57
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-blog-admin\src\views\articleManage\createArticle\index.vue
@@ -11,12 +11,6 @@
     <el-tabs type="border-card">
       <el-tab-pane label="发布文章">
         <el-form ref="form" :model="form" :label-position="labelPosition" label-width="90px" :rules="rule">
-          <!-- <el-row :gutter="10">
-        <el-col :xs="8" :sm="6" :md="4" :lg="3" :xl="1"><div class="grid-content bg-purple"></div></el-col>
-        <el-col :xs="4" :sm="6" :md="8" :lg="9" :xl="11"><div class="grid-content bg-purple-light"></div></el-col>
-        <el-col :xs="4" :sm="6" :md="8" :lg="9" :xl="11"><div class="grid-content bg-purple"></div></el-col>
-        <el-col :xs="8" :sm="6" :md="4" :lg="3" :xl="1"><div class="grid-content bg-purple-light"></div></el-col>
-      </el-row> -->
           <el-row class="demo-autocomplete" :gutter="20">
             <el-col :lg="10" :md="12" :xs="24">
               <el-form-item label="标题" prop="title">
@@ -45,29 +39,8 @@
                     <span v-if="!node.isLeaf"> ({{ data.subcategories.length }}) </span>
                   </template>
                 </el-cascader>
-                <!-- <el-select v-model="form.categoryId" clearable placeholder="请选择" @change="selectTag">
-                  <el-option
-                    v-for="item in fTagList"
-                    :key="item._id"
-                    :label="item.name"
-                    :value="item._id"
-                  />
-                </el-select> -->
               </el-form-item>
             </el-col>
-            <!-- <el-col :lg="10" :md="12" :xs="24">
-              <el-form-item label="二级分类" prop="cTagId">
-                <el-select v-model="form.cTagId" multiple placeholder="请选择">
-                  <el-option
-                    v-for="item in cTagList"
-                    :key="item._id"
-                    multiple-limit="’2‘"
-                    :label="item.name"
-                    :value="item._id"
-                  />
-                </el-select>
-              </el-form-item>
-            </el-col> -->
           </el-row>
           <el-form-item label="封面和摘要">
             <div class="bottomMiddle">
@@ -88,6 +61,7 @@
                     :http-request="uploadSuccess"
                   >
                     <i v-if="fileList.length === 0" class="el-icon-plus" />
+                    <el-button class="select-img" type="default" size="small" @click.stop="selectImg">图库列表</el-button>
                   </el-upload>
                 </el-col>
                 <el-col :lg="16" :md="18" :xs="24">
@@ -126,17 +100,20 @@
         </el-form>
       </el-tab-pane>
     </el-tabs>
+    <imgList ref="imgList" @selectImgUrl="selectImgUrl" />
   </div>
 </template>
 
 <script>
 import Tinymce from '@/components/Tinymce'
+import imgList from './imgList'
 import { getCategoryList } from '@/api/tag'
 import { uploadImgs } from '@/api/upload'
 import { createArticle } from '@/api/article'
 export default {
   components: {
-    Tinymce
+    Tinymce,
+    imgList
   },
   data() {
     return {
@@ -177,6 +154,19 @@ export default {
     this.labelPosition = this.device === 'desktop' ? 'left' : 'top' // 兼容手机端
   },
   methods: {
+    // 选择封面
+    selectImg() {
+      this.$refs.imgList.dialogFormVisible = true
+      console.log('xunze')
+    },
+    // 图片回选
+    selectImgUrl(url) {
+      this.fileInfo = url
+      this.fileList.push({
+        name: 'xxx',
+        url
+      })
+    },
     // 获取分类
     async getCategoryList() {
       const { data } = await getCategoryList()
@@ -236,6 +226,7 @@ export default {
     // 删除图片
     handRemove(file, fileList) {
       this.fileList = fileList
+      this.fileInfo = ''
     },
     uploadSuccess(file) {
       this.fileData = new FormData()
@@ -276,6 +267,14 @@ export default {
       height: 150px !important;
       line-height: 150px !important;
       display: block;
+    }
+    .avatar {
+      position: relative;
+    }
+    .select-img {
+      position: absolute;
+      right: 5px;
+      top: 5px;
     }
     @media only screen and (max-width: 760px) {
       .el-upload--picture-card {

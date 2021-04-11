@@ -48,6 +48,10 @@ div:focus {
   outline: none;
 }
 
+ul li {
+  list-style: none;
+}
+
 .clearfix {
   &:after {
     visibility: hidden;
