@@ -1,19 +1,19 @@
 /*
  * @Author: pwl
  * @Date: 2021-01-27 10:43:21
- * @LastEditTime: 2021-01-28 17:38:29
+ * @LastEditTime: 2021-04-28 11:01:20
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-blog-admin\src\store\modules\user.js
  */
 import { login, logout, getInfo } from '@/api/user'
-import { getToken, setToken, removeToken } from '@/utils/auth'
+import { getToken, setToken, setCookie, getCookie, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
 
 const getDefaultState = () => {
   return {
     token: getToken(),
-    userId: '',
+    userId: getCookie('userId') || '',
     name: '',
     avatar: ''
   }
@@ -49,6 +49,7 @@ const actions = {
         commit('SET_TOKEN', data.token)
         commit('SET_USERID', data.userId)
         setToken(data.token)
+        setCookie('userId', data.userId)
         resolve()
       }).catch(error => {
         reject(error)

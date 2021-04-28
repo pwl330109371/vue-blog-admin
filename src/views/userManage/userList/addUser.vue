@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-02-23 15:12:07
- * @LastEditTime: 2021-02-24 18:09:49
+ * @LastEditTime: 2021-04-28 15:51:33
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-blog-admin\src\views\userManage\userList\addUser.vue
@@ -221,6 +221,7 @@ export default {
     // 删除图片
     handRemove(file, fileList) {
       this.fileList = fileList
+      this.fileInfo = ''
     },
     uploadSuccess(file) {
       this.fileData = new FormData()

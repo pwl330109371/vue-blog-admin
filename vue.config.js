@@ -25,7 +25,7 @@ module.exports = {
    * Detail: https://cli.vuejs.org/config/#publicpath
    */
   publicPath: '/',
-  outputDir: 'dist',
+  outputDir: 'my_blog_admin',
   assetsDir: 'static',
   lintOnSave: process.env.NODE_ENV === 'development',
   productionSourceMap: false,
@@ -46,24 +46,6 @@ module.exports = {
     }
     // before: require('./mock/mock-server.js') // 这里打开可能会出现代理不通的问题
   },
-  // devServer: {
-  //   port: port,
-  //   open: true,
-  //   overlay: {
-  //     warnings: false,
-  //     errors: true
-  //   },
-  //   proxy: {
-  //     '^/api': {
-  //       // target: 'http://115.159.117.118:3000/',
-  //       target: 'http://192.168.0.105:3000/',
-  //       // target: process.env.VUE_APP_BASE_API,
-  //       ws: true,
-  //       changeOrigin: true
-  //     }
-  //   },
-  //   before: require('./mock/mock-server.js')
-  // },
   configureWebpack: {
     // provide the app's title in webpack's name field, so that
     // it can be accessed in index.html to inject the correct title.

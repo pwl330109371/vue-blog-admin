@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-27 11:22:21
- * @LastEditTime: 2021-04-11 18:17:57
+ * @LastEditTime: 2021-04-28 15:56:45
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-blog-admin\src\views\articleManage\createArticle\index.vue
@@ -184,7 +184,7 @@ export default {
         if (valid) {
           this.$refs.upload.submit()
           // 如果没有上传图片就不走上传图片的请求
-          if (this.fileList.length !== 0) {
+          if (this.fileList.length !== 0 && this.fileInfo === '') {
             await uploadImgs(this.fileData).then((res) => {
               console.log(res)
               this.fileInfo = res.data

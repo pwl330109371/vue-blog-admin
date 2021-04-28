@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-27 11:17:36
- * @LastEditTime: 2021-04-11 16:36:35
+ * @LastEditTime: 2021-04-28 11:04:52
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-blog-admin\src\views\articleManage\articleList\index.vue
@@ -162,7 +162,7 @@ export default {
     async delArticle(index, id) {
       const { code } = await delArticle(id)
       if (code === 200) {
-        this.tableData.splice(1, index)
+        this.tableData.splice(index, 1)
         this.$message({
           type: 'success',
           message: '删除成功!'

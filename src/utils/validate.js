@@ -1,8 +1,8 @@
 /*
  * @Author: your name
  * @Date: 2021-01-27 10:43:21
- * @LastEditTime: 2021-01-28 11:19:16
- * @LastEditors: your name
+ * @LastEditTime: 2021-04-21 16:44:34
+ * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-blog-admin\src\utils\validate.js
  */
@@ -23,6 +23,6 @@ export function isExternal(path) {
  * @returns {Boolean}
  */
 export function validUsername(str) {
-  const valid_map = ['pwl201314', 'editor']
+  const valid_map = ['pwl201314', 'editor', 'wff201314']
   return valid_map.indexOf(str.trim()) >= 0
 }
