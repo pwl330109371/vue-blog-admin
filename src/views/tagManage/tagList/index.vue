@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-27 11:30:15
- * @LastEditTime: 2021-02-20 14:15:29
+ * @LastEditTime: 2021-04-30 18:18:11
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-blog-admin\src\views\tagManage\tagList\index.vue
@@ -119,11 +119,9 @@ export default {
       }
     },
     showInput(index) {
-      console.log(index)
       this.inputVisible = index
       this.$nextTick(_ => {
-        console.log(this.$refs.saveTagInput[index])
-        this.$refs.saveTagInput[index].$refs.input.focus()
+        this.$refs.saveTagInput[0].$refs.input.focus()
       })
     },
     handleInputConfirm(id, index) {
@@ -131,7 +129,11 @@ export default {
       if (inputValue) {
         this.dynamicTags.push(inputValue)
       }
-      if (inputValue[index] === '') return
+      console.log('value:', inputValue[index])
+      if (!inputValue[index] || !inputValue[index].trim()) {
+        this.inputVisible = -1
+        return
+      }
       this.createCategory(id, inputValue[index], 2)
       this.inputVisible = -1
       this.inputValue = []
