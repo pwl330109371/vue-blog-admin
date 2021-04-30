@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-27 14:54:44
- * @LastEditTime: 2021-04-11 16:38:37
+ * @LastEditTime: 2021-04-29 15:05:45
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-blog-admin\src\api\article.js
@@ -13,6 +13,15 @@ export function createArticle(data) {
   return serve({
     url: '/api/article/addArticle',
     method: 'POST',
+    data
+  })
+}
+
+// 编辑文章
+export function editArticle(data) {
+  return serve({
+    url: '/api/article/editArticle',
+    method: 'PUT',
     data
   })
 }

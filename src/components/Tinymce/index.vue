@@ -3,7 +3,7 @@
  * @作者: 作者
  * @Date: 2019-06-03 19:44:11
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-04-02 11:56:53
+ * @LastEditTime: 2021-04-29 14:50:29
  -->
 <template>
   <div :class="{fullscreen:fullscreen}" class="tinymce-container editor-container">
@@ -81,7 +81,9 @@ export default {
   },
   watch: {
     value(val) {
+      console.log(456)
       if (!this.hasChange && this.hasInit) {
+        console.log(890)
         this.$nextTick(() =>
           window.tinymce.get(this.tinymceId).setContent(val || ''))
       }

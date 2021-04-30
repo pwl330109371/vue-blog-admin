@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-03-03 10:54:16
- * @LastEditTime: 2021-04-21 16:23:39
+ * @LastEditTime: 2021-04-30 14:29:35
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-blog-admin\src\views\login\index1.vue
@@ -69,7 +69,6 @@
 </template>
 
 <script>
-import { validUsername } from '@/utils/validate'
 function colorValue(min) {
   return Math.floor(Math.random() * 255 + min)
 }
@@ -100,15 +99,15 @@ export default {
   name: 'Login',
   data() {
     const validateUsername = (rule, value, callback) => {
-      if (!validUsername(value)) {
-        callback(new Error('Please enter the correct user name'))
+      if (value.length < 3) {
+        callback(new Error('用户名长度不能小于三位数!'))
       } else {
         callback()
       }
     }
     const validatePassword = (rule, value, callback) => {
       if (value.length < 6) {
-        callback(new Error('The password can not be less than 6 digits'))
+        callback(new Error('密码长度不能小于六位数!'))
       } else {
         callback()
       }
@@ -203,9 +202,17 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
-          this.$store.dispatch('user/login', this.loginForm).then(() => {
-            this.$router.push({ path: this.redirect || '/' })
-            this.loading = false
+          this.$store.dispatch('user/login', this.loginForm).then((userId) => {
+            this.$store.dispatch('user/getInfo', { userId }).then((data) => {
+              if (data.role !== 3) {
+                this.$router.push({ path: this.redirect || '/' })
+                this.loading = false
+              } else {
+                this.$message.error('没有权限进行后台管理系统,请联系管理员!')
+                this.loading = false
+              }
+
+            })
           }).catch(() => {
             this.loading = false
           })

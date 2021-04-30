@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-27 11:17:36
- * @LastEditTime: 2021-04-28 11:04:52
+ * @LastEditTime: 2021-04-29 16:26:18
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-blog-admin\src\views\articleManage\articleList\index.vue
@@ -103,17 +103,23 @@
         </div>
       </el-tab-pane>
     </el-tabs>
+    <editarticle @updateList="updateList" />
   </div>
 </template>
 
 <script>
 import { getArticleList, delArticle } from '@/api/article'
 import { formatDate } from '@/utils'
+import editarticle from './editArticle'
+import bus from '@/views/bus'
 export default {
   filters: {
     formatDate(val) {
       return formatDate(val, 'yyyy-MM-dd hh:mm:ss')
     }
+  },
+  components: {
+    editarticle
   },
   data() {
     return {
@@ -142,9 +148,13 @@ export default {
     },
     // 编辑
     handleEdit(row) {
-      console.log(row)
+      bus.$emit('editArticle', row)
     },
-    // 删除
+    // 编辑完后更新列表
+    updateList() {
+      this.getArticleList()
+    },
+    // 删除操作
     handleDelete(index, row) {
       this.$confirm('此操作将永久删除该文章, 是否继续?', '提示', {
         confirmButtonText: '确定',
@@ -159,6 +169,7 @@ export default {
         })
       })
     },
+    // 删除方法
     async delArticle(index, id) {
       const { code } = await delArticle(id)
       if (code === 200) {

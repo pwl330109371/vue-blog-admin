@@ -1,106 +1,111 @@
 <!--
  * @Author: your name
- * @Date: 2021-01-27 11:22:21
- * @LastEditTime: 2021-04-29 14:00:50
+ * @Date: 2021-04-29 11:53:12
+ * @LastEditTime: 2021-04-29 16:25:16
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
- * @FilePath: \vue-blog-admin\src\views\articleManage\createArticle\index.vue
+ * @FilePath: \vue-blog-admin\src\views\articleManage\articleList\editArticle.vue
 -->
 <template>
-  <div class="add-article">
-    <el-tabs type="border-card">
-      <el-tab-pane label="发布文章">
-        <el-form ref="form" :model="form" :label-position="labelPosition" label-width="90px" :rules="rule">
-          <el-row class="demo-autocomplete" :gutter="20">
-            <el-col :lg="10" :md="12" :xs="24">
-              <el-form-item label="标题" prop="title">
-                <el-input v-model="form.title" placeholder="请输入标题" />
-              </el-form-item>
-            </el-col>
-            <el-col :lg="10" :md="12" :xs="24">
-              <el-form-item label="作者">
-                <el-input v-model="form.author" placeholder="转载请标明出处,填写原作者名称与地址!" />
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row class="demo-autocomplete" :gutter="20">
-            <el-col :lg="10" :md="12" :xs="24">
-              <el-form-item label="选择分类" prop="categoryId">
-                <el-cascader
-                  ref="cascader"
-                  v-model="form.categoryId"
-                  :options="options"
-                  placeholder="请选择分类"
-                  :props="{ children: 'subcategories', value: 'id', label: 'name' }"
-                  @change="handleChange"
+  <div class="edit-article">
+    <el-dialog
+      title="文章编辑"
+      :visible.sync="dialogVisible"
+      :before-close="closelClick"
+      destroy-on-close
+      width="70%"
+    >
+      <el-form ref="form" :model="form" top="5vh" :label-position="labelPosition" label-width="90px" :rules="rule">
+        <el-row class="demo-autocomplete" :gutter="20">
+          <el-col :lg="10" :md="12" :xs="24">
+            <el-form-item label="标题" prop="title">
+              <el-input v-model="form.title" placeholder="请输入标题" />
+            </el-form-item>
+          </el-col>
+          <el-col :lg="10" :md="12" :xs="24">
+            <el-form-item label="作者">
+              <el-input v-model="form.author" placeholder="转载请标明出处,填写原作者名称与地址!" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row class="demo-autocomplete" :gutter="20">
+          <el-col :lg="10" :md="12" :xs="24">
+            <el-form-item label="选择分类" prop="categoryId">
+              <el-cascader
+                ref="cascader"
+                v-model="form.categoryId"
+                :options="options"
+                placeholder="请选择分类"
+                :props="{ children: 'subcategories', value: 'id', label: 'name' }"
+                @change="handleChange"
+              >
+                <template slot-scope="{ node, data }">
+                  <span>{{ data.name }}</span>
+                  <span v-if="!node.isLeaf"> ({{ data.subcategories.length }}) </span>
+                </template>
+              </el-cascader>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-form-item label="封面和摘要">
+          <div class="bottomMiddle">
+            <el-row class="demo-autocomplete" :gutter="5">
+              <el-col :lg="4" :md="6" :xs="24">
+                <el-upload
+                  ref="upload"
+                  class="avatar"
+                  :class="fileList.length > 0 ? 'active' : '' "
+                  action="1"
+                  :limit="limit"
+                  accept="image/jpeg,image/jpg,image/png,image/bmp,image/webp,image/gif"
+                  :on-change="beforeAvatarUpload"
+                  :on-remove="handRemove"
+                  list-type="picture-card"
+                  :auto-upload="false"
+                  :file-list="fileList"
+                  :http-request="uploadSuccess"
                 >
-                  <template slot-scope="{ node, data }">
-                    <span>{{ data.name }}</span>
-                    <span v-if="!node.isLeaf"> ({{ data.subcategories.length }}) </span>
-                  </template>
-                </el-cascader>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-form-item label="封面和摘要">
-            <div class="bottomMiddle">
-              <el-row class="demo-autocomplete" :gutter="5">
-                <el-col :lg="4" :md="6" :xs="24">
-                  <el-upload
-                    ref="upload"
-                    class="avatar"
-                    :class="fileList.length > 0 ? 'active' : '' "
-                    action="1"
-                    :limit="limit"
-                    accept="image/jpeg,image/jpg,image/png,image/bmp,image/webp,image/gif"
-                    :on-change="beforeAvatarUpload"
-                    :on-remove="handRemove"
-                    list-type="picture-card"
-                    :auto-upload="false"
-                    :file-list="fileList"
-                    :http-request="uploadSuccess"
-                  >
-                    <i v-if="fileList.length === 0" class="el-icon-plus" />
-                    <el-button class="select-img" type="default" size="small" @click.stop="selectImg">图库列表</el-button>
-                  </el-upload>
-                </el-col>
-                <el-col :lg="16" :md="18" :xs="24">
-                  <el-input
-                    v-model="form.make"
-                    class="thumn"
-                    type="textarea"
-                    placeholder="选填，帮助用户快速了解内容，如不填写自动抓取内容前50字"
-                    maxlength="120"
-                    show-word-limit
-                  />
-                </el-col>
-              </el-row>
-            </div>
-          </el-form-item>
-          <el-row class="demo-autocomplete">
-            <el-col :lg="20" :md="18" :xs="24">
-              <el-form-item label="内容" class="content" prop="content">
-                <tinymce
-                  ref="editor"
-                  v-model="form.content"
-                  class="tinymce"
-                  :height="300"
-                  :is-inline="false"
+                  <i v-if="fileList.length === 0" class="el-icon-plus" />
+                  <el-button class="select-img" type="default" size="small" @click.stop="selectImg">图库列表</el-button>
+                </el-upload>
+              </el-col>
+              <el-col :lg="16" :md="18" :xs="24">
+                <el-input
+                  v-model="form.make"
+                  class="thumn"
+                  type="textarea"
+                  placeholder="选填，帮助用户快速了解内容，如不填写自动抓取内容前50字"
+                  maxlength="120"
+                  show-word-limit
                 />
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row class="demo-autocomplete">
-            <el-col :lg="20" :md="18" :xs="24">
-              <el-form-item class="bottom">
-                <el-button type="primary" :loading="isLoading" @click="saveClick('form')">{{ isLoading ? '提交中' : '保存' }}</el-button>
-              </el-form-item>
-            </el-col>
-          </el-row>
-        </el-form>
-      </el-tab-pane>
-    </el-tabs>
-    <imgList ref="imgList" @selectImgUrl="selectImgUrl" />
+              </el-col>
+            </el-row>
+          </div>
+        </el-form-item>
+        <el-row class="demo-autocomplete">
+          <el-col :lg="20" :md="18" :xs="24">
+            <el-form-item label="内容" class="content" prop="content">
+              <tinymce
+                ref="editor"
+                v-model="form.content"
+                class="tinymce"
+                :height="300"
+                :is-inline="false"
+              />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row class="demo-autocomplete">
+          <el-col :lg="20" :md="18" :xs="24">
+            <el-form-item class="bottom">
+              <el-button @click="calcel('form')">取 消</el-button>
+              <el-button type="primary" :loading="isLoading" @click="saveClick('form')">{{ isLoading ? '提交中' : '保存' }}</el-button>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+      <imgList ref="imgList" @selectImgUrl="selectImgUrl" />
+    </el-dialog>
   </div>
 </template>
 
@@ -109,7 +114,8 @@ import Tinymce from '@/components/Tinymce'
 import imgList from '@/components/ImgList'
 import { getCategoryList } from '@/api/tag'
 import { uploadImgs } from '@/api/upload'
-import { createArticle } from '@/api/article'
+import { editArticle } from '@/api/article'
+import bus from '@/views/bus'
 export default {
   components: {
     Tinymce,
@@ -117,6 +123,8 @@ export default {
   },
   data() {
     return {
+      articleId: '',
+      dialogVisible: false,
       labelPosition: 'left',
       limit: 1, // 图片上传数量
       options: [], // 分类集合
@@ -150,6 +158,19 @@ export default {
     }
   },
   mounted() {
+    bus.$off()
+    bus.$on('editArticle', (row) => {
+      this.dialogVisible = true
+      this.articleId = row.id
+      this.form.title = row.title
+      this.form.author = row.author
+      this.form.content = row.content
+      this.form.categoryName = row.categoryName
+      this.form.categoryId = row.categoryId
+      this.selectImgUrl(row.picture)
+      // this.form.make = row.
+      console.log('row', row)
+    })
     this.getCategoryList() // 获取一级分类
     this.labelPosition = this.device === 'desktop' ? 'left' : 'top' // 兼容手机端
   },
@@ -157,7 +178,6 @@ export default {
     // 选择封面
     selectImg() {
       this.$refs.imgList.dialogFormVisible = true
-      console.log('xunze')
     },
     // 图片回选
     selectImgUrl(url) {
@@ -178,7 +198,7 @@ export default {
       this.form.categoryName = nodesObj[0].label
       this.form.categoryId = nodesObj[0].value
     },
-    // 发布文章
+    // 编辑文章
     async saveClick(formName) {
       this.$refs[formName].validate(async(valid) => {
         if (valid) {
@@ -191,6 +211,7 @@ export default {
             })
           }
           const params = {
+            articleId: this.articleId, // 文章id
             title: this.form.title, // 标题
             author: this.form.author, // 发布人
             picture: this.fileInfo, // 封面
@@ -199,11 +220,13 @@ export default {
             describe: this.form.make, // 简介
             content: this.form.content // 资讯内容
           }
-          const { code } = await createArticle(params)
+          const { code } = await editArticle(params)
           if (code === 200) {
-            this.$message.success('创建成功!')
+            this.$message.success('编辑成功!')
             // this.$router.push({ path:'information'})
             this.$refs[formName].resetFields()
+            this.dialogVisible = false
+            this.$emit('updateList')
           }
           this.fileInfo = ''
         }
@@ -228,6 +251,17 @@ export default {
       this.fileList = fileList
       this.fileInfo = ''
     },
+    closelClick() {
+      this.calcel('form')
+    },
+    // 取消
+    calcel(formName) {
+      this.dialogVisible = false
+      this.form.content = ''
+      this.$refs['form'].resetFields()
+      this.fileList = []
+      this.fileInfo = ''
+    },
     uploadSuccess(file) {
       this.fileData = new FormData()
       this.fileData.append('file', file.file)
@@ -236,8 +270,8 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
- ::v-deep.add-article {
+<style lang="scss" scoped>
+ ::v-deep.edit-article {
   width: 100%;
   height: 100%;
   background: #fff;
@@ -299,7 +333,7 @@ export default {
     }
   }
   .bottom {
-    margin-top: 120px;
+    margin-top: 50px;
     padding-top: 1rem;
     display: flex;
     justify-content: flex-end;

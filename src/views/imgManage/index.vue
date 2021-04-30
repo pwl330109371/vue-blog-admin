@@ -1,43 +1,37 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-10 14:46:16
- * @LastEditTime: 2021-04-10 16:25:41
+ * @LastEditTime: 2021-04-30 17:05:42
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-blog-admin\src\views\imgManage\index.vue
 -->
 <template>
   <div>
-    <el-row>
-      <el-col v-for="(item, index) in tableData" :key="item.id" :span="7" :offset="index > 0 ? 1 : 0">
-        <el-card :body-style="{ padding: '0px' }">
-          <el-image
-            :src="item.imgUrl"
-            fit="cover"
-            class="image"
-          />
-          <div style="padding: 14px;">
-            <span>{{ item.categoryName }}</span>
-            <div class="bottom clearfix">
-              <time class="time">{{ item.createdAt }}</time>
-              <el-button type="text" class="button">操作按钮</el-button>
-            </div>
-          </div>
-        </el-card>
-      </el-col>
-    </el-row>
+    <vue-waterfall-easy :imgs-arr="tableData" :height="800" :max-cols="5" src-key="imgUrl" href-key="imgUrl" @scrollReachBottom="load">
+      <div slot-scope="props" class="img-info">
+        <div class="some-title">
+          <time class="time">{{ props.value.createdAt }}</time>
+          <el-tag type="success">{{ props.value.categoryName }}</el-tag>
+        </div>
+      </div>
+    </vue-waterfall-easy>
   </div>
 </template>
 
 <script>
 import { getImgList } from '@/api/img'
+import vueWaterfallEasy from 'vue-waterfall-easy'
 export default {
+  components: {
+    vueWaterfallEasy
+  },
   data() {
     return {
       tableData: [],
       req: {
         pageIndex: 1,
-        pageSize: 10,
+        pageSize: 20,
         total: 0
       }
     }
@@ -54,8 +48,12 @@ export default {
         pageSize: this.req.pageSize
       }
       const { data } = await getImgList(params)
-      this.tableData = data.rows
+      this.tableData = this.tableData.concat(data.rows)
       this.req.total = data.total
+    },
+    load() {
+      this.req.pageIndex += 1
+      this.getImgList()
     }
   }
 }
@@ -69,6 +67,14 @@ export default {
   .bottom {
     margin-top: 13px;
     line-height: 12px;
+  }
+  .some-title {
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    time {
+      flex: 1;
+    }
   }
 
   .button {

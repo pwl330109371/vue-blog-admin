@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-11 17:33:32
- * @LastEditTime: 2021-04-11 18:33:07
+ * @LastEditTime: 2021-04-30 16:57:46
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-blog-admin\src\views\articleManage\createArticle\imgList.vue
@@ -9,7 +9,7 @@
 <template>
   <div class="img-container">
     <el-dialog title="选择封面(单击选中，双击预览)" :visible.sync="dialogFormVisible" :width="dialogWidth">
-      <ul v-infinite-scroll="load" class="infinite-list" style="overflow:auto;height:450px">
+      <!-- <ul v-infinite-scroll="load" class="infinite-list" style="overflow:auto;height:450px">
         <li v-for="(item, index) in tableData" :key="item.id" class="infinite-list-item">
           <el-image
             class="item-img"
@@ -20,7 +20,15 @@
             @dblclick="dialogVisible = true"
           />
         </li>
-      </ul>
+      </ul> -->
+      <vue-waterfall-easy :imgs-arr="tableData" :height="600" :max-cols="4" src-key="imgUrl" href-key="imgUrl" @click="clickFn" @scrollReachBottom="load">
+        <div slot-scope="props" class="img-info">
+          <div class="some-title">
+            <el-tag v-if="selectActive !== props.index" @click.stop="selectImg($event, props.index, props.value.imgUrl)">选择封面</el-tag>
+            <el-tag v-else type="success">已选择</el-tag>
+          </div>
+        </div>
+      </vue-waterfall-easy>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
         <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -33,8 +41,12 @@
 </template>
 
 <script>
+import vueWaterfallEasy from 'vue-waterfall-easy'
 import { getImgList } from '@/api/img'
 export default {
+  components: {
+    vueWaterfallEasy
+  },
   data() {
     return {
       dialogFormVisible: false,
@@ -45,7 +57,7 @@ export default {
       tableData: [], // 图片列表
       req: {
         pageIndex: 1,
-        pageSize: 10,
+        pageSize: 20,
         total: 0
       }
     }
@@ -74,9 +86,11 @@ export default {
       this.req.total = data.total
       this.selectImgUrl = data.rows[0].imgUrl
     },
-    selectImg(index, url) {
+    selectImg(event, index, url) {
+      event.preventDefault()
       this.selectActive = index
       this.selectImgUrl = url
+      console.log(url)
     },
     submitForm() {
       this.$emit('selectImgUrl', this.selectImgUrl)
@@ -85,6 +99,15 @@ export default {
     load() {
       this.req.pageIndex += 1
       this.getImgList()
+    },
+    clickFn(event, { index, value }) {
+      // 阻止a标签跳转
+      // event.preventDefault()
+      // // 只有当点击到图片时才进行操作
+      // if (event.target.tagName.toLowerCase() === 'img') {
+      //   console.log('img clicked', index, value)
+      //   this.selectImgUrl = url
+      // }
     }
   }
 }
@@ -107,6 +130,9 @@ export default {
   }
   .item-img.active {
     border: 3px solid red;
+  }
+  .some-title {
+    padding: 10px;
   }
 }
 

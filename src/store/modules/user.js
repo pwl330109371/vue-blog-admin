@@ -1,7 +1,7 @@
 /*
  * @Author: pwl
  * @Date: 2021-01-27 10:43:21
- * @LastEditTime: 2021-04-28 11:01:20
+ * @LastEditTime: 2021-04-30 14:25:47
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-blog-admin\src\store\modules\user.js
@@ -15,7 +15,8 @@ const getDefaultState = () => {
     token: getToken(),
     userId: getCookie('userId') || '',
     name: '',
-    avatar: ''
+    avatar: '',
+    role: '' // 1 超级管理员 2 管理员 3 普通用户
   }
 }
 
@@ -36,6 +37,9 @@ const mutations = {
   },
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
+  },
+  SET_ROLE: (state, role) => {
+    state.role = role
   }
 }
 
@@ -50,7 +54,7 @@ const actions = {
         commit('SET_USERID', data.userId)
         setToken(data.token)
         setCookie('userId', data.userId)
-        resolve()
+        resolve(data.userId)
       }).catch(error => {
         reject(error)
       })
@@ -67,9 +71,10 @@ const actions = {
           return reject('Verification failed, please Login again.')
         }
 
-        const { nickName, picture } = data
+        const { nickName, picture, role } = data
 
         commit('SET_NAME', nickName)
+        commit('SET_ROLE', role)
         commit('SET_AVATAR', picture)
         resolve(data)
       }).catch(error => {
@@ -81,14 +86,10 @@ const actions = {
   // user logout
   logout({ commit, state }) {
     return new Promise((resolve, reject) => {
-      logout(state.token).then(() => {
-        removeToken() // must remove  token  first
-        resetRouter()
-        commit('RESET_STATE')
-        resolve()
-      }).catch(error => {
-        reject(error)
-      })
+      removeToken() // must remove  token  first
+      resetRouter()
+      commit('RESET_STATE')
+      resolve()
     })
   },
 
