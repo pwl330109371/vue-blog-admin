@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-27 11:17:36
- * @LastEditTime: 2021-04-29 16:26:18
+ * @LastEditTime: 2021-05-20 14:32:55
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-blog-admin\src\views\articleManage\articleList\index.vue
@@ -46,7 +46,7 @@
             <template slot-scope="scope">
               <el-image
                 style="width: 100px; height: 100px"
-                :src="scope.row.picture"
+                :src="scope.row.picture + '/thumbnail/100x100'"
                 fit="contain"
               />
             </template>

@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-27 10:43:21
- * @LastEditTime: 2021-03-02 11:43:43
+ * @LastEditTime: 2021-05-19 17:55:59
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-blog-admin\src\utils\request.js
@@ -56,8 +56,7 @@ service.interceptors.response.use(
     if (res.code !== 200) {
       Message({
         message: res.msg || 'Error',
-        type: 'error',
-        duration: 15 * 1000
+        type: 'error'
       })
 
       // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
@@ -73,7 +72,7 @@ service.interceptors.response.use(
           })
         })
       }
-      return Promise.reject(new Error(res.message || 'Error'))
+      return Promise.reject(new Error(res.message || 'Error'))  
     } else {
       return res
     }
@@ -83,7 +82,7 @@ service.interceptors.response.use(
     Message({
       message: error.message,
       type: 'error',
-      duration: 5 * 1000
+      duration: 3 * 1000
     })
     return Promise.reject(error)
   }

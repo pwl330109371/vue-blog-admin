@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-11 17:33:32
- * @LastEditTime: 2021-04-30 16:57:46
+ * @LastEditTime: 2021-05-20 14:41:34
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-blog-admin\src\views\articleManage\createArticle\imgList.vue
@@ -21,10 +21,10 @@
           />
         </li>
       </ul> -->
-      <vue-waterfall-easy :imgs-arr="tableData" :height="600" :max-cols="4" src-key="imgUrl" href-key="imgUrl" @click="clickFn" @scrollReachBottom="load">
+      <vue-waterfall-easy :imgs-arr="tableData" :height="600" :max-cols="4" src-key="imgUrl" href-key="imgSrc" @click="clickFn" @scrollReachBottom="load">
         <div slot-scope="props" class="img-info">
           <div class="some-title">
-            <el-tag v-if="selectActive !== props.index" @click.stop="selectImg($event, props.index, props.value.imgUrl)">选择封面</el-tag>
+            <el-tag v-if="selectActive !== props.index" @click.stop="selectImg($event, props.index, props.value.imgSrc)">选择封面</el-tag>
             <el-tag v-else type="success">已选择</el-tag>
           </div>
         </div>
@@ -82,9 +82,13 @@ export default {
       }
       const { data } = await getImgList(params)
       if (data.rows.length === 0) return
+      data.rows.forEach((item) => {
+        item.imgSrc = item.imgUrl
+        item.imgUrl += '/thumbnail/240x135'
+      })
       this.tableData = this.tableData.concat(data.rows)
       this.req.total = data.total
-      this.selectImgUrl = data.rows[0].imgUrl
+      this.selectImgUrl = data.rows[0].imgSrc
     },
     selectImg(event, index, url) {
       event.preventDefault()

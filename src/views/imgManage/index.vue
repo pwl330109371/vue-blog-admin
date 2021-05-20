@@ -1,17 +1,17 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-10 14:46:16
- * @LastEditTime: 2021-04-30 17:05:42
+ * @LastEditTime: 2021-05-20 14:39:43
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-blog-admin\src\views\imgManage\index.vue
 -->
 <template>
   <div>
-    <vue-waterfall-easy :imgs-arr="tableData" :height="800" :max-cols="5" src-key="imgUrl" href-key="imgUrl" @scrollReachBottom="load">
+    <vue-waterfall-easy :imgs-arr="tableData" :height="800" :max-cols="5" src-key="imgUrl" href-key="imgSrc" @scrollReachBottom="load">
       <div slot-scope="props" class="img-info">
         <div class="some-title">
-          <time class="time">{{ props.value.createdAt }}</time>
+          <time class="time">{{ props.value.createdAt | formatDate }}</time>
           <el-tag type="success">{{ props.value.categoryName }}</el-tag>
         </div>
       </div>
@@ -21,10 +21,16 @@
 
 <script>
 import { getImgList } from '@/api/img'
+import { formatDate } from '@/utils'
 import vueWaterfallEasy from 'vue-waterfall-easy'
 export default {
   components: {
     vueWaterfallEasy
+  },
+  filters: {
+    formatDate(val) {
+      return formatDate(val, 'yyyy-MM-dd hh:mm:ss')
+    }
   },
   data() {
     return {
@@ -48,6 +54,11 @@ export default {
         pageSize: this.req.pageSize
       }
       const { data } = await getImgList(params)
+      if (data.rows.length === 0) return
+      data.rows.forEach((item) => {
+        item.imgSrc = item.imgUrl
+        item.imgUrl += '/thumbnail/240x135'
+      })
       this.tableData = this.tableData.concat(data.rows)
       this.req.total = data.total
     },
