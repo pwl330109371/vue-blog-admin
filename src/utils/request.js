@@ -1,3 +1,9 @@
+/**
+ * Author: pengwenlei 330109371@qq.com
+ * Date: 2025-12-12 14:54:36
+ * LastEditors: pengwenlei 330109371@qq.com
+ * LastEditTime: 2026-01-13 16:19:32
+ */
 /*
  * @Author: your name
  * @Date: 2021-01-27 10:43:21
@@ -15,7 +21,7 @@ import { getToken } from '@/utils/auth'
 const service = axios.create({
   baseURL: process.env.NODE_ENV === 'development' ? '' : process.env.VUE_APP_BASE_API, // url = base url + request url
   // withCredentials: true, // send cookies when cross-domain requests
-  timeout: 5000 // request timeout
+  timeout: 25000 // request timeout
 })
 
 // request interceptor

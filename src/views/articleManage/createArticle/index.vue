@@ -1,8 +1,8 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-27 11:22:21
- * @LastEditTime: 2021-04-29 14:00:50
- * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2026-01-13 16:30:35
+ * @LastEditors: pengwenlei 330109371@qq.com
  * @Description: In User Settings Edit
  * @FilePath: \vue-blog-admin\src\views\articleManage\createArticle\index.vue
 -->
@@ -214,12 +214,12 @@ export default {
       console.log(file, fileList)
       this.fileList = fileList
       const isJPG = file.type === 'image/jpeg' || 'image/jpg' || 'image/png'
-      const isLt5M = file.size / 1024 / 1024 < 5
+      const isLt5M = file.size / 1024 / 1024 < 20
       if (!isJPG) {
         this.$message.error('上传头像图片只能是 /jpeg/png/jpeg 格式!')
       }
       if (!isLt5M) {
-        this.$message.error('上传头像图片大小不能超过 5MB!')
+        this.$message.error('上传头像图片大小不能超过 20MB!')
       }
       return isJPG && isLt5M
     },

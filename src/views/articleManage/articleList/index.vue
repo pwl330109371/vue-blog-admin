@@ -46,7 +46,7 @@
             <template slot-scope="scope">
               <el-image
                 style="width: 100px; height: 100px"
-                :src="scope.row.picture + '/thumbnail/100x100'"
+                :src="scope.row.picture"
                 fit="contain"
               />
             </template>

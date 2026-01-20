@@ -1,8 +1,8 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-10 14:46:16
- * @LastEditTime: 2021-05-20 14:39:43
- * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2026-01-13 16:29:10
+ * @LastEditors: pengwenlei 330109371@qq.com
  * @Description: In User Settings Edit
  * @FilePath: \vue-blog-admin\src\views\imgManage\index.vue
 -->
@@ -57,7 +57,6 @@ export default {
       if (data.rows.length === 0) return
       data.rows.forEach((item) => {
         item.imgSrc = item.imgUrl
-        item.imgUrl += '/thumbnail/240x135'
       })
       this.tableData = this.tableData.concat(data.rows)
       this.req.total = data.total

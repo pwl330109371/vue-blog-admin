@@ -1,8 +1,8 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-11 17:33:32
- * @LastEditTime: 2021-05-20 14:41:34
- * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2026-01-14 13:56:57
+ * @LastEditors: pengwenlei 330109371@qq.com
  * @Description: In User Settings Edit
  * @FilePath: \vue-blog-admin\src\views\articleManage\createArticle\imgList.vue
 -->
@@ -83,8 +83,7 @@ export default {
       const { data } = await getImgList(params)
       if (data.rows.length === 0) return
       data.rows.forEach((item) => {
-        item.imgSrc = item.imgUrl
-        item.imgUrl += '/thumbnail/240x135'
+        item.imgSrc = item.imgUrl+ '?imageView2/2/w/750/q/70/format/webp'
       })
       this.tableData = this.tableData.concat(data.rows)
       this.req.total = data.total
